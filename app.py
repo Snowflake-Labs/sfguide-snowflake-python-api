@@ -68,7 +68,7 @@ def get_trips_monthly():
     start_range = request.args.get('start_range')
     end_range = request.args.get('end_range')
     if start_range and end_range:
-        sql = "select count(*) as trip_count, dayname(starttime) as day_of_week from demo.trips where starttime between ? and ? group by dayofweek(starttime), dayname(starttime) order by dayofweek(starttime);"
+        sql = "select COUNT(*) as trip_count, MONTHNAME(starttime) as month from demo.trips where starttime between ? and ? group by MONTH(starttime), MONTHNAME(starttime) order by MONTH(starttime);"
         return exec_and_fetch(sql, (start_range, end_range))
     sql = "select COUNT(*) as trip_count, MONTHNAME(starttime) as month from demo.trips group by MONTH(starttime), MONTHNAME(starttime) order by MONTH(starttime);"
     return exec_and_fetch(sql)
@@ -80,7 +80,7 @@ def get_day_of_week():
     start_range = request.args.get('start_range')
     end_range = request.args.get('end_range')
     if start_range and end_range:
-        sql = "select count(*) as trip_count, dayname(starttime) as day_of_week from demo.trips where starttime between ? and ? group by dayofweek(starttime), dayname(starttime) order by dayofweek(starttime);"
+        sql = "select COUNT(*) as trip_count, DAYNAME(starttime) as day_of_week from demo.trips where starttime between ? and ? group by DAYOFWEEK(starttime), DAYNAME(starttime) order by DAYOFWEEK(starttime);"
         return exec_and_fetch(sql, (start_range, end_range))
     sql = "select COUNT(*) as trip_count, DAYNAME(starttime) as day_of_week from demo.trips group by DAYOFWEEK(starttime), DAYNAME(starttime) order by DAYOFWEEK(starttime);"
     return exec_and_fetch(sql)
