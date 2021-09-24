@@ -12,7 +12,8 @@ This project demonstrates how to build and deploy a custom API powered by Snowfl
 
 ## Configuration
 
-Copy the config-template.py to config.py and modify the parameters according to your Snowflake configuration.
+Copy the serverless-template.yml to serverless.yml and modify the parameters according to your Snowflake configuration. Put your private key
+to your Snowflake user in AWS SSM is us-west-2 region under the parameter <ACCOUNT>.DATA_APPS_DEMO.
 
 Install serverless and other required node packages and configure serverless (sls) for the project.
 

@@ -1,8 +1,0 @@
-SNOWFLAKE_ACCOUNT = '<account>'
-SNOWFLAKE_USER = '<user>'
-SNOWFLAKE_PRIVATE_KEY = '''-----BEGIN RSA PRIVATE KEY-----
-<private_key>
------END RSA PRIVATE KEY-----'''
-SNOWFLAKE_DATABASE = '<database>'
-SNOWFLAKE_SCHEMA = '<schema>'
-SNOWFLAKE_WAREHOUSE = '<warehouse>'
