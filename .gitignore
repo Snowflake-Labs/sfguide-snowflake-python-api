@@ -1,4 +1,4 @@
-config.py
+serverless.yml
 node_modules
 venv
 .serverless

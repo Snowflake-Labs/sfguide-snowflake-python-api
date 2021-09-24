@@ -1,4 +1,3 @@
-org: bculbersonsf
 app: snowflake-python-api
 service: snowflake-python-api
 
@@ -20,13 +19,24 @@ provider:
 functions:
   api:
     handler: wsgi_handler.handler
+    environment:
+      SNOWFLAKE_ACCOUNT: '<ACCOUNT>'
+      SNOWFLAKE_USER: 'DATA_APPS_DEMO'
+      SNOWFLAKE_DATABASE: 'DATA_APPS_DEMO'
+      SNOWFLAKE_SCHEMA: 'DEMO'
+      SNOWFLAKE_WAREHOUSE: 'DATA_APPS_DEMO'
+      SNOWFLAKE_PRIVATE_KEY: ${ssm:/<ACCOUNT>.DATA_APPS_DEMO}
+    timeout: 15
     events:
       - http:
-          path: /
-          method: ANY
+          path: /trips/monthly
+          method: GET
       - http:
-          path: /{proxy+}
-          method: ANY
+          path: /trips/day_of_week
+          method: GET
+      - http:
+          path: /trips/temperature
+          method: GET
 
 plugins:
   - serverless-wsgi
