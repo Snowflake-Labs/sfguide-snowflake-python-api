@@ -1,49 +1,54 @@
 import config
-import snowflake.connector
+import requests
+import uuid
+from datetime import timedelta
 from flask import Blueprint, request
 
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives import serialization
-
+from api_auth import JWTGenerator
 from utils import api_response, params_valid
 
 
-def connect():
-    p_key = serialization.load_pem_private_key(
-            config.SNOWFLAKE_PRIVATE_KEY.encode('utf-8'),
-            password=None,
-            backend=default_backend()
-        )
-    pkb = p_key.private_bytes(
-        encoding=serialization.Encoding.DER,
-        format=serialization.PrivateFormat.PKCS8,
-        encryption_algorithm=serialization.NoEncryption())
+sqlapi = Blueprint('sqlapi', __name__)
+authfn = JWTGenerator(config.SNOWFLAKE_ACCOUNT, config.SNOWFLAKE_USER, config.SNOWFLAKE_PRIVATE_KEY, timedelta(59), timedelta(54)).get_token
+http_session = requests.Session()
+url_base = f"https://{config.SNOWFLAKE_ACCOUNT}.snowflakecomputing.com"
 
-    snowflake.connector.paramstyle='qmark'
-    conn = snowflake.connector.connect(
-        user=config.SNOWFLAKE_USER,
-        account=config.SNOWFLAKE_ACCOUNT,
-        warehouse=config.SNOWFLAKE_WAREHOUSE,
-        schema=config.SNOWFLAKE_SCHEMA,
-        database=config.SNOWFLAKE_DATABASE,
-        private_key=pkb,
-        session_parameters={
-            'QUERY_TAG': 'Snowflake-Python-Connector',
-        })
-   
-    return conn
+HEADERS = {
+    "Authorization": "Bearer " + authfn(),
+    "Content-Type": "application/json",
+    "Snowflake-Account": config.SNOWFLAKE_ACCOUNT,
+    "Accept": "application/json",
+    "X-Snowflake-Authorization-Token-Type": "KEYPAIR_JWT"
+}
 
 
-conn = connect()
-connector = Blueprint('connector', __name__)
+def sql2body(sql):
+    result = {
+        "statement": f"{sql}",
+        "timeout": 60,
+        "resultSetMetaData": {
+            "format": "json"
+        },
+        "database": config.SNOWFLAKE_DATABASE,
+        "schema": config.SNOWFLAKE_SCHEMA,
+        "warehouse": config.SNOWFLAKE_WAREHOUSE,
+        "parameters": {"query_tag": "Snowflake-Python-SQLApi"},
+        }
+    return result
 
 
-def exec_and_fetch(sql, params = None):
-    cur = conn.cursor().execute(sql, params)
-    return cur.fetchall()
+def exec_and_fetch(sql):
+    jsonBody = sql2body(sql)
+    r = http_session.post(f"{url_base}/api/v2/statements?requestId={str(uuid.uuid4())}&retry=true", json=jsonBody, headers=HEADERS)
+    if r.status_code == 200:
+        result = r.json()['data']
+        return result
+    else:
+        print(f"ERROR: Status code from {sql}: {r.status_code}")
+        raise Exception("Invalid response from API")
 
 
-@connector.route("/trips/monthly")
+@sqlapi.route("/sqlapi/trips/monthly")
 @api_response
 def get_trips_monthly():
     start_range = request.args.get('start_range')
@@ -55,7 +60,7 @@ def get_trips_monthly():
     return exec_and_fetch(sql)
 
 
-@connector.route("/trips/day_of_week")
+@sqlapi.route("/sqlapi/trips/day_of_week")
 @api_response
 def get_day_of_week():
     start_range = request.args.get('start_range')
@@ -67,7 +72,7 @@ def get_day_of_week():
     return exec_and_fetch(sql)
 
 
-@connector.route("/trips/temperature")
+@sqlapi.route("/sqlapi/trips/temperature")
 @api_response
 def get_temperature():
     start_range = request.args.get('start_range')

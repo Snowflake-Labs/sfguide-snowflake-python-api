@@ -1,6 +1,12 @@
-import functools, time
+import functools, time, re
 
 from flask import jsonify, make_response
+
+
+def params_valid(start_range, end_range):
+    if re.search("^[0-9]{2}/[0-9]{2}/[0-9]{4}$", start_range) and re.search("^[0-9]{2}/[0-9]{2}/[0-9]{4}$", end_range):
+        return True
+    return False
 
 
 def api_response(func):

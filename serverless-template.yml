@@ -37,7 +37,16 @@ functions:
       - http:
           path: /trips/temperature
           method: GET
-
+      - http:
+          path: /sqlapi/trips/monthly
+          method: GET
+      - http:
+          path: /sqlapi/trips/day_of_week
+          method: GET
+      - http:
+          path: /sqlapi/trips/temperature
+          method: GET 
+          
 plugins:
   - serverless-wsgi
   - serverless-python-requirements
