@@ -1,5 +1,4 @@
-app: snowflake-python-api
-service: snowflake-python-api
+service: <NAME_OF_YOUR_SERVICE>
 
 frameworkVersion: '2'
 
@@ -37,6 +36,15 @@ functions:
       - http:
           path: /trips/temperature
           method: GET
+      - http:
+          path: /sqlapi/trips/monthly
+          method: GET
+      - http:
+          path: /sqlapi/trips/day_of_week
+          method: GET
+      - http:
+          path: /sqlapi/trips/temperature
+          method: GET 
 
 plugins:
   - serverless-wsgi
