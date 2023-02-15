@@ -9,6 +9,16 @@ def params_valid(start_range, end_range):
     return False
 
 
+class JsonEncoder(JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
+        return JSONEncoder.default(self, obj)
+
+    
+app.json_encoder = JsonEncoder
+
+
 def api_response(func):
     @functools.wraps(func)
     def f(*args, **kwargs):
@@ -18,5 +28,6 @@ def api_response(func):
         run_time = end_time - start_time        
         response = dict(result=result, time_ms=int(run_time*1000))
         value = make_response(jsonify(response))
+        value.headers['Access-Control-Allow-Origin'] = '*'
         return value
     return f
