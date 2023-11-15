@@ -1,4 +1,3 @@
-import serverless_wsgi
 from flask import Flask, jsonify, make_response
 
 from connector import connector
@@ -26,6 +25,3 @@ class JsonEncoder(JSONEncoder):
         return JSONEncoder.default(self, obj)
 
 app.json_encoder = JsonEncoder
-
-def handler(event, context):
-    return serverless_wsgi.handle_request(app, event, context)

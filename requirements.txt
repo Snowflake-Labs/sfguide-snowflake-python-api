@@ -18,6 +18,7 @@ PyJWT==2.8.0
 pyOpenSSL==23.3.0
 pytz==2023.3.post1
 requests==2.31.0
+serverless-wsgi==3.0.3
 snowflake-connector-python==3.5.0
 sortedcontainers==2.4.0
 tomlkit==0.12.2
