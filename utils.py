@@ -9,16 +9,6 @@ def params_valid(start_range, end_range):
     return False
 
 
-class JsonEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, decimal.Decimal):
-            return float(obj)
-        return JSONEncoder.default(self, obj)
-
-    
-app.json_encoder = JsonEncoder
-
-
 def api_response(func):
     @functools.wraps(func)
     def f(*args, **kwargs):

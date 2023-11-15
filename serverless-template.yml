@@ -1,6 +1,5 @@
 service: <NAME_OF_YOUR_SERVICE>
-
-frameworkVersion: '2'
+frameworkVersion: '3'
 
 custom:
   wsgi:
@@ -8,16 +7,19 @@ custom:
     packRequirements: false
   pythonRequirements:
     dockerizePip: non-linux
+    layer: true
 
 provider:
   name: aws
-  runtime: python3.8
+  runtime: python3.11
   lambdaHashingVersion: '20201221'
   region: us-west-2
 
 functions:
   api:
     handler: wsgi_handler.handler
+    layers:
+      - {Ref: PythonRequirementsLambdaLayer}
     environment:
       SNOWFLAKE_ACCOUNT: '<ACCOUNT>'
       SNOWFLAKE_USER: 'DATA_APPS_DEMO'
@@ -53,6 +55,13 @@ plugins:
 package:
   patterns:
     - '!__pycache__/**'
-    - '!_node_modules/**'
-    - '!venv/**'
+    - '!node_modules/**'
+    - '!.venv/**'
+    - '!.serverless/**'
+    - '!LICENSE'
+    - '!README.md'
+    - '!serverless-template.yml'
+    - '!requirements.txt'
+    - '!package.json'
+    - '!package-lock.json'
 
