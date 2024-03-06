@@ -8,6 +8,8 @@ custom:
   pythonRequirements:
     dockerizePip: non-linux
     layer: true
+  localstack:
+    stages: [local]
 
 provider:
   name: aws
@@ -46,11 +48,12 @@ functions:
           method: GET
       - http:
           path: /sqlapi/trips/temperature
-          method: GET 
+          method: GET
 
 plugins:
   - serverless-wsgi
   - serverless-python-requirements
+  - serverless-localstack
 
 package:
   patterns:
@@ -64,4 +67,3 @@ package:
     - '!requirements.txt'
     - '!package.json'
     - '!package-lock.json'
-

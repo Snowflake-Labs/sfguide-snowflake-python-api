@@ -26,6 +26,7 @@ def connect():
         warehouse=config.SNOWFLAKE_WAREHOUSE,
         schema=config.SNOWFLAKE_SCHEMA,
         database=config.SNOWFLAKE_DATABASE,
+        host=config.SNOWFLAKE_HOST,
         private_key=pkb,
         session_parameters={
             'QUERY_TAG': 'Snowflake-Python-Connector',

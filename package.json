@@ -7,5 +7,8 @@
     "serverless-offline": "^8.7.0",
     "serverless-python-requirements": "^6.0.1",
     "serverless-wsgi": "^3.0.3"
+  },
+  "dependencies": {
+    "serverless-localstack": "^1.2.0"
   }
 }
